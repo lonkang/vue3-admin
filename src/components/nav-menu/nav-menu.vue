@@ -2,26 +2,24 @@
   <div class="nav-menu">
     <div class="logo">
       <img class="img" src="~@/assets/img/logo.svg" alt="logo" />
-      <span v-if="!props.collapse" class="title">Vue3+TS</span>
+      <span v-show="!collapse" class="title">Vue3+CMS</span>
     </div>
     <el-menu
       default-active="2"
       class="el-menu-vertical"
-      :collapse="collapse"
       background-color="#0c2135"
+      :collapse="props.collapse"
       text-color="#b7bdc3"
       active-text-color="#0a60bd"
     >
       <template v-for="item in userMenus" :key="item.id">
-        <!-- 二级菜单 -->
-        <template v-if="item.type === 1">
-          <!-- 二级菜单的可以展开的标题 -->
+        <!-- 判断二级菜单 -->
+        <template v-if="item.children && item.children.length">
           <el-submenu :index="item.id + ''">
             <template #title>
-              <i v-if="item.icon" :class="item.icon"></i>
+              <i :class="item.icon"></i>
               <span>{{ item.name }}</span>
             </template>
-            <!-- 遍历里面的item -->
             <template v-for="subitem in item.children" :key="subitem.id">
               <el-menu-item
                 :index="subitem.id + ''"
@@ -33,9 +31,11 @@
             </template>
           </el-submenu>
         </template>
-        <!-- 一级菜单 -->
-        <template v-else-if="item.type === 2">
-          <el-menu-item :index="item.id + ''">
+        <template v-else>
+          <el-menu-item
+            :index="item.id + ''"
+            @click="handleMenuItemClick(item)"
+          >
             <i v-if="item.icon" :class="item.icon"></i>
             <span>{{ item.name }}</span>
           </el-menu-item>
